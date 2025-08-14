@@ -2,53 +2,73 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-  <title>Weather Insight</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="stylesheet" href="weather.css">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
+  <meta name="description" content="Weather Vibe - Stay updated with the latest weather information.">
+  <meta name="keywords" content="weather, forecast, local weather, weather updates">
+  <title>Weather Vibe</title>
 </head>
 <body>
- <main>
-   <h1>Sierra Leone Weather Insight</h1>
-   <div id="weather-container">
-    <div id="search-div">
-      <input type="text" id="city-input" placeholder="Type in the name of the city" class="search">
-     <button id="search-btn"><i class="bi bi-search search"></i></button>
+    <h1><i class="fa fa-cloud">Weather Vibe</i></h1>
+    <p id="header-para">Stay updated with the latest weather information.</p>
+     <div id="search-div">
+    <input type="text" id="city-input" placeholder="Search for city...">
+    <button id="search-btn">Search</button>
     </div>
-     <p id="date-time" class="text-white fs-5"></p>
-      <div id="data-container">
-      <p id="city"> <span id="city-name"></span></p>
-     <h5 id="description"></h5>
-      <p id="icon"> </p>
-      <div class="flex-display">
-        <h5>Temperature <i class=" bi bi-thermometer"></i></h5>
-        <p id="temp"></p>
+  <main id="weather-container">
+    <div id="weather-info">
+      <h2 id="city-name">City Name</h2>
+      <p id="date">Date</p>
+      <img id="weather-info-icon" src="" alt="Icon">
+      <p><span id="temperature-value">Null</span></p>
+      <p id="weather-description">Weather Description</p>
+      <p id="feels-like">Feels Like: 0°C</p>
+    </div>
+    <div id="temp-info">
+      <div class="temp-card">
+        <h6><i class="bi bi-moisture"></i> Humidity</h6>
+        <p id="humidity-value">0%</p>
       </div>
-     <div id="remain-data">
-      <div>
-        <h6>Humidity</h6>
-        <p class="red"><i class="bi bi-droplet"></i></p>
-        <p id="humid" class="red"></p>
-      </div> 
-       <div>
-         <h6>Wind Speed</h6>
-         <p class="red"> <i class="bi bi-wind"></i></p>
-         <p id="wind" class="red"></p>
-         </div>
-       <div>
-         <h6>Coordinate</h6>
-         <p class="red"> <i class="bi bi-map"></i></p>
-         <p class="red"> <span>Lon: </span> <span id="lon"></span> <span>Lat: </span> <span id="lat"></span></p>
-       </div>
-       </div>
-   </div>
-     </div>
-   </div>
- </main> 
-  <footer>
-   <p>&copy; 2023 Sheku Alpha Kamara. All rights reserved.</p>
-  </footer>
-  <script src="weather.js"></script>
+      <div class="temp-card">
+        <h6><i class="bi bi-wind"></i> Wind Speed</h6>
+        <p id="wind-speed-value">0 m/s</p>
+      </div>
+      <div class="temp-card">
+        <h6><i class="bi bi-eye"></i> Visibility</h6>
+        <p id="visibility-value">0 m</p>
+      </div>
+      <div class="temp-card">
+        <h6><i class="bi bi-speedometer2"></i> Pressure</h6>
+        <p id="pressure-value">0 hPa</p>
+      </div>
+    </div>
+    <div id="UV-index-info">
+      <h6><i class="bi bi-sun"></i> UV Index</h6>
+      <p id="uv-index-value">0</p>
+    </div>
+    <div id="five-days-forecast">
+      <h3>5-Day Forecast</h3>
+      <div id="forecast-cards">
+        <!-- Forecast cards will be dynamically generated here -->
+      </div>
+
+    </div>
+    <footer>
+      <p>&copy; 202 Weather Vibe. All rights reserved.</p>
+      <p>Developed by <a href="https://sheku1995.github.io/my_portfolio/" target="_blank">Sheku Alpha Kamara</a></p>
+    </footer>
+  </main>
+  <script
+src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-D1GzH6Tk8hrdcuh9wBvPpQ9I+eHc4DqZULhpttG4aPHhnU9+pB9O4GnP79WgMG1P"
+crossorigin="anonymous"
+  ></script>
+   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+   <script src="weather.js"></script>
 </body>
 </html>

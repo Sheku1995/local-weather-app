@@ -1,111 +1,104 @@
-const city = document.getElementById("city-name");
-const weatherIcon = document.getElementById("icon");
-const temp = document.getElementById("temp");
-const descr = document.getElementById("description");
-const wind = document.getElementById("wind");
-const humid = document.getElementById("humid");
-const long = document.getElementById("lon");
-const lati = document.getElementById("lat");
-const searchBtn = document.getElementById("search-btn");
-const dataContainer = document.getElementById("data-container");
+let cityName = document.getElementById("city-name");
+let displayDate = document.getElementById("date");
+let temperatureValue = document.getElementById("temperature-value");
+let feelLikes = document.getElementById("feels-like");
+let humidityValue = document.getElementById("humidity-value");
+let windSpeedValue = document.getElementById("wind-speed-value");
+let visibilityValue = document.getElementById("visibility-value");
+let pressureValue = document.getElementById("pressure-value");
+let uvIndexValue = document.getElementById("uv-index-value");
+let cityInput = document.getElementById("city-input");
+let weatherDescription = document.getElementById("weather-description");
+let weatherIcon = document.querySelector("#weather-info img"); // More specific selector
+let apiKey = "d60ce01d42a60e68e1a9fe13e53ad2dd";
+let weatherData = JSON.parse(localStorage.getItem("weatherData")) || [];
 
-searchBtn.addEventListener("click", ()=>{
-    
- const cityInput = document.getElementById("city-input");
-  const cities = cityInput.value.trim().toLowerCase();
- let apiKey = "d60ce01d42a60e68e1a9fe13e53ad2dd";
- let url = `https://api.openweathermap.org/data/2.5/weather?q=${cities},SL&appid=${apiKey}&units=metric`;
-  
- if(!cities){
-   alert("Please type in the name of the city!")
- }
-  
-   fetch(url)
-.then(res => res.json())
-.then(data => {
-  const cityName = data.name;
-  const icon= data.weather[0].icon;
-  const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-  const windSpeed = data.wind.speed;
-  const weatherDescription = data.weather[0].description;
-  const temperature = data.main.temp;
-  const humidity = data.main.humidity;
-  const lat = data.coord.lat;
-  const lon = data.coord.lon;
-          
-    city.textContent = cityName;
-    weatherIcon.innerHTML = `
-    <img src="${iconUrl}" alt="Icon">
-    `
-    temp.textContent = `${temperature.toFixed(0)}°C`;
-    descr.textContent = weatherDescription;
-    wind.textContent = `${windSpeed}m/s`;
-    humid.textContent = `${humidity}%`;
-    long.textContent = lon;
-    lati.textContent = lat;
-});
-  cityInput.value = "";
-
-});
-
-
-function updateDateTime() {
-  const now = new Date();
-
-  const options = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  };
-  
-
-  const formatted = now.toLocaleString('en-US', options);
-
-  document.getElementById('date-time').textContent = formatted;
+function fetchData(city) {
+  let url = `https://api.openweathermap.org/data/2.5/weather?q=${city},SL&appid=${apiKey}&units=metric`;
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        alert("City not found. Please try again.");
+      }
+      return response.json();
+    })
+    .then(data => {
+      weatherData = [data]; // Only keep latest
+      localStorage.setItem("weatherData", JSON.stringify(weatherData));
+      displayWeatherData(data);
+      fiveDaysForecast(city);
+    })
+    .catch(error => {
+      return error;
+    });
 }
 
-// Update every second
-updateDateTime();
-setInterval(updateDateTime, 1000);
+function displayWeatherData(data) {
+  if (data) {
+    cityName.textContent = data.name;
+    temperatureValue.textContent = `${Math.round(data.main.temp)}°C`;
+    weatherDescription.textContent = data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1);
+    feelLikes.textContent = `Feels like ${Math.round(data.main.feels_like)}°C`;
+    humidityValue.textContent = `${data.main.humidity}%`;
+    windSpeedValue.textContent = `${data.wind.speed} m/s`;
+    visibilityValue.textContent = `${data.visibility / 1000} km`;
+    pressureValue.textContent = `${data.main.pressure} hPa`;
+    weatherIcon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+    uvIndexValue.textContent = "N/A"; 
+  }
+  getCurrentDate();
+}
 
-// Fetch and display the weather data for the default city on page load
-function fetchDefaultWeather(){
-  
-  const defaultCity = "freetown";
-  let apiKey = "d60ce01d42a60e68e1a9fe13e53ad2dd";
-  let url = `https://api.openweathermap.org/data/2.5/weather?q=${defaultCity},SL&appid=${apiKey}&units=metric`;
-   
-   
-  fetch(url)
- .then(res => res.json())
- .then(data => {
-   const cityName = data.name;
-   const icon= data.weather[0].icon;
-   const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-   const windSpeed = data.wind.speed;
-   const weatherDescription = data.weather[0].description;
-   const temperature = data.main.temp;
-   const humidity = data.main.humidity;
-   const lat = data.coord.lat;
-   const lon = data.coord.lon;
-           
-     city.textContent = cityName
-     weatherIcon.innerHTML = `
-     <img src="${iconUrl}" alt="Icon">
-     `
-     temp.textContent = `${temperature.toFixed(0)}°C`;
-     descr.textContent = weatherDescription;
-     wind.textContent = `${windSpeed}m/s`;
-     humid.textContent = `${humidity}%`;
-     long.textContent = lon;
-     lati.textContent = lat;
-     
- });
+function getCurrentDate() {
+  let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  let today = new Date();
+  let day = today.getDate();
+  let month = today.getMonth() + 1;
+  let year = today.getFullYear();
+  let dayName = days[today.getDay()];
+  if (day < 10) day = "0" + day;
+  if (month < 10) month = "0" + month;
+  displayDate.textContent = `${dayName} ${month}-${day}-${year}`;
+}
 
-};
+let forecast = document.getElementById("forecast-cards");
+function fiveDaysForecast(city) {
+  let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city},SL&appid=${apiKey}&units=metric`;
+  fetch(forecastUrl)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Error fetching forecast data");
+      }
+      return response.json();
+    })
+    .then(data => {
+      const dailyForecasts = data.list.filter(item => item.dt_txt.includes("12:00:00"));
+      forecast.innerHTML = "";
+      dailyForecasts.forEach(item => {
+        let date = item.dt_txt.split(" ")[0];
+        let iconUrl = `http://openweathermap.org/img/wn/${item.weather[0].icon}.png`;
+        forecast.innerHTML += `
+          <div class="forecast-card">
+            <p>${date}</p>
+            <img src="${iconUrl}" alt="${item.weather[0].description}">
+            <p>${Math.round(item.main.temp)}°C</p>
+            <p>${item.weather[0].description.charAt(0).toUpperCase() + item.weather[0].description.slice(1)}</p>
+          </div>
+        `;
+      });
+    })
+    .catch(error => {
+      console.error("Error fetching forecast data:", error);
+     // forecast.innerHTML = `<p style="text-align: center; font-size: 20px">Error fetching forecast data</p>`;
+    });
+}
 
-fetchDefaultWeather();
+// Initial load
+fetchData("Freetown");
+
+// Search button handler
+document.getElementById("search-btn").addEventListener("click", function() {
+  const city = cityInput.value.trim() || "Freetown";
+  fetchData(city);
+  cityInput.value = "";
+});
